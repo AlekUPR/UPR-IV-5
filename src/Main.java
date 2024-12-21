@@ -18,8 +18,9 @@ public class Main {
             //findValidRookMoves(board, pieceRow, pieceCol);
             //findValidBishopMoves(board, pieceRow, pieceCol);
             //findValidKnightMoves(board, pieceRow, pieceCol);
-            findValidKingMoves(board, pieceRow, pieceCol);
+            //findValidKingMoves(board, pieceRow, pieceCol);
             //findValidQueenMoves(board, pieceRow, pieceCol);
+            findValidPawnMoves(board, pieceRow, pieceCol);
             drawBoard(board);
         } else {
             System.out.println("Piece not found on the board:");
@@ -71,18 +72,18 @@ public class Main {
 
     public static String getEmojiForPiece(char piece) {
         return switch (piece) {
-            case 'K' -> "?";
-            case 'Q' -> "?";
-            case 'R' -> "?";
-            case 'B' -> "?";
-            case 'N' -> "?";
-            case 'P' -> "?";
-            case 'k' -> "?";
-            case 'q' -> "?";
-            case 'r' -> "?";
-            case 'b' -> "?";
-            case 'n' -> "?";
-            case 'p' -> "?";
+            case 'K' -> "♔";
+            case 'Q' -> "♕";
+            case 'R' -> "♖";
+            case 'B' -> "♗";
+            case 'N' -> "♘";
+            case 'P' -> "♙";
+            case 'k' -> "♚";
+            case 'q' -> "♛";
+            case 'r' -> "♜";
+            case 'b' -> "♝";
+            case 'n' -> "♞";
+            case 'p' -> "♟";
             case '.' -> ".";
             case '0' -> "0";
             default -> ".";
@@ -176,6 +177,25 @@ public class Main {
                     board[i][j] = '0';
                 }
                 if (row + 1 == i && (col - 1 == j || col + 1 == j || col == j)) {
+                    board[i][j] = '0';
+                }
+            }
+        }
+    }
+
+    // VALIDNI DVIZENJA NA PIONOT
+    // 8/8/8/8/8/8/5p2/8
+    // 8/1P6/8/8/8/8/8/8
+    // 8/8/8/8/8/8/P7/8
+    // 8/8/8/3p4/8/8/8/8
+    // 8/8/8/8/8/8/8/7P
+    public static void findValidPawnMoves(char[][] board, int row, int col) {
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                if (row - 1 == i && (col - 1 == j || col + 1 == j || col == j)) {
+                    board[i][j] = '0';
+                }
+                if (row - 2 == i && (col == j)) {
                     board[i][j] = '0';
                 }
             }
