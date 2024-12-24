@@ -19,8 +19,8 @@ public class Main {
             //findValidBishopMoves(board, pieceRow, pieceCol);
             //findValidKnightMoves(board, pieceRow, pieceCol);
             //findValidKingMoves(board, pieceRow, pieceCol);
-            //findValidQueenMoves(board, pieceRow, pieceCol);
-            findValidPawnMoves(board, pieceRow, pieceCol);
+            //findValidPawnMoves(board, pieceRow, pieceCol);
+            findValidQueenMoves(board, pieceRow, pieceCol);
             drawBoard(board);
         } else {
             System.out.println("Piece not found on the board:");
@@ -200,5 +200,15 @@ public class Main {
                 }
             }
         }
+    }
+    // VALIDNI DVIZENJA NA KRALICATA
+    // 8/8/8/8/8/8/5Q2/8
+    // 8/3q4/8/8/8/8/8/8
+    // 1q6/8/8/8/8/8/8/8
+    // 8/8/8/8/8/4Q3/8/8
+    // 8/8/8/8/8/8/8/2Q5
+    public static void findValidQueenMoves(char[][] board, int row, int col) {
+        findValidBishopMoves(board, row, col);
+        findValidRookMoves(board, row, col);
     }
 }
