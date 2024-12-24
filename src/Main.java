@@ -201,6 +201,7 @@ public class Main {
             }
         }
     }
+
     // VALIDNI DVIZENJA NA KRALICATA
     // 8/8/8/8/8/8/5Q2/8
     // 8/3q4/8/8/8/8/8/8
