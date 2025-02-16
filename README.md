@@ -1,2 +1,2 @@
 # UPR-IV-5
-Repository for UPR-projects
+Repository for UPR-project
