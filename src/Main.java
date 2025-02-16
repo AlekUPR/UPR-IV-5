@@ -15,12 +15,12 @@ public class Main {
         if (piecePosition != null) {
             int pieceRow = piecePosition[0];
             int pieceCol = piecePosition[1];
-            //findValidRookMoves(board, pieceRow, pieceCol);
+            findValidRookMoves(board, pieceRow, pieceCol);
             //findValidBishopMoves(board, pieceRow, pieceCol);
             //findValidKnightMoves(board, pieceRow, pieceCol);
             //findValidKingMoves(board, pieceRow, pieceCol);
             //findValidPawnMoves(board, pieceRow, pieceCol);
-            findValidQueenMoves(board, pieceRow, pieceCol);
+//            findValidQueenMoves(board, pieceRow, pieceCol);
             drawBoard(board);
         } else {
             System.out.println("Piece not found on the board:");
