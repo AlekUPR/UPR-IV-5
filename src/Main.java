@@ -3,30 +3,42 @@ import java.util.Scanner;
 public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
+
+
         System.out.print("Enter FEN: ");
         String fen = scanner.nextLine();
-
         char[][] board = convertFENToBoard(fen);
 
-        System.out.print("Enter piece to find: ");
-        char piece = scanner.nextLine().charAt(0);
 
-        int[] piecePosition = findPiecePosition(board, piece);
-        if (piecePosition != null) {
-            int pieceRow = piecePosition[0];
-            int pieceCol = piecePosition[1];
+        System.out.print("Enter first piece (to calculate moves): ");
+        char firstPiece = scanner.nextLine().charAt(0);
 
-            //findValidRookMoves(board, pieceRow, pieceCol);
-            //findValidBishopMoves(board, pieceRow, pieceCol);
-            //findValidKnightMoves(board, pieceRow, pieceCol);
-            //findValidKingMoves(board, pieceRow, pieceCol);
-            //findValidPawnMoves(board, pieceRow, pieceCol);
-            findValidQueenMoves(board, pieceRow, pieceCol);
 
-            drawBoard(board);
-        } else {
-            System.out.println("Piece not found on the board:");
+        System.out.print("Enter second piece (obstacle): ");
+        char secondPiece = scanner.nextLine().charAt(0);
+
+        int[] firstPiecePos = findPiecePosition(board, firstPiece);
+        int[] secondPiecePos = findPiecePosition(board, secondPiece);
+
+        if (firstPiecePos == null || secondPiecePos == null) {
+            System.out.println("One or both pieces not found on the board.");
+            return;
         }
+
+        int firstRow = firstPiecePos[0];
+        int firstCol = firstPiecePos[1];
+
+
+        if (Character.toLowerCase(firstPiece) == 'r') {
+            findValidRookMoves(board, firstRow, firstCol);
+        } else if (Character.toLowerCase(firstPiece) == 'b') {
+            findValidBishopMoves(board, firstRow, firstCol);
+        } else if (Character.toLowerCase(firstPiece) == 'q') {
+            findValidQueenMoves(board, firstRow, firstCol);
+        }
+
+
+        drawBoard(board);
     }
 
     public static char[][] convertFENToBoard(String fen) {
@@ -37,10 +49,10 @@ public class Main {
             String row = rows[i];
             int col = 0;
 
-            for (int j = 0; j < row.length(); j++) {
-                char c = row.charAt(j);
+            for (char c : row.toCharArray()) {
                 if (Character.isDigit(c)) {
-                    for (int k = 0; k < Character.getNumericValue(c); k++) {
+                    int emptySpaces = Character.getNumericValue(c);
+                    for (int k = 0; k < emptySpaces; k++) {
                         board[i][col++] = '.';
                     }
                 } else {
@@ -87,131 +99,55 @@ public class Main {
             case 'n' -> "♞";
             case 'p' -> "♟";
             case '.' -> ".";
-            case '0' -> "0";
+            case '0' -> "0"; // Valid move marker
             default -> ".";
         };
     }
 
-    // VALIDNI DVIZENJA NA TOPOT
-    // 8/8/8/8/3R4/8/8/8
-    // 8/8/8/8/8/8/7r/8
-    // 8/2r5/8/8/8/8/8/8
-    // 8/8/4R3/8/8/8/8/8
-    // 8/8/8/8/8/8/8/7R
     public static void findValidRookMoves(char[][] board, int row, int col) {
-        for (int i = 0; i < 8; i++) {
-            for (int j = 0; j < 8; j++) {
-                if (i == row && j == col) {
-                    continue;
-                }
-
-                if (i == row) {
-                    board[i][j] = '0';
-                } else if (j == col) {
-                    board[i][j] = '0';
-                }
-            }
+        for (int i = row - 1; i >= 0; i--) {
+            if (board[i][col] != '.') break;
+            board[i][col] = '0';
+        }
+        for (int i = row + 1; i < 8; i++) {
+            if (board[i][col] != '.') break;
+            board[i][col] = '0';
+        }
+        for (int j = col - 1; j >= 0; j--) {
+            if (board[row][j] != '.') break;
+            board[row][j] = '0';
+        }
+        for (int j = col + 1; j < 8; j++) {
+            if (board[row][j] != '.') break;
+            board[row][j] = '0';
         }
     }
 
-    // VALIDNI DVIZENJA NA LANFEROT
-    // 8/1B6/8/8/8/8/8/8
-    // B7/8/8/8/8/8/8/8
-    // 8/8/8/8/8/8/7b/8
-    // 8/8/8/8/2b5/8/8/8
-    // 8/8/8/8/8/8/3B4/8
     public static void findValidBishopMoves(char[][] board, int row, int col) {
-        for (int i = 0; i < 8; i++) {
+        for (int i = 1; i < 8; i++) {
             if (row + i < 8 && col + i < 8 && board[row + i][col + i] == '.')
                 board[row + i][col + i] = '0';
-
+            else break;
+        }
+        for (int i = 1; i < 8; i++) {
             if (row - i >= 0 && col - i >= 0 && board[row - i][col - i] == '.')
                 board[row - i][col - i] = '0';
+            else break;
         }
-
-        for (int i = 0; i < 8; i++) {
+        for (int i = 1; i < 8; i++) {
             if (row + i < 8 && col - i >= 0 && board[row + i][col - i] == '.')
                 board[row + i][col - i] = '0';
-
+            else break;
+        }
+        for (int i = 1; i < 8; i++) {
             if (row - i >= 0 && col + i < 8 && board[row - i][col + i] == '.')
                 board[row - i][col + i] = '0';
+            else break;
         }
     }
 
-    // VALIDNI DVIZENJA NA KONJOT
-    // 8/8/8/8/8/8/5N2/8
-    // 8/1n6/8/8/8/8/8/8
-    // 8/8/8/8/8/8/N7/8
-    // 8/8/8/3n4/8/8/8/8
-    // 8/8/8/8/8/8/8/7N
-    public static void findValidKnightMoves(char[][] board, int row, int col) {
-        for (int i = 0; i < 8; i++) {
-            for (int j = 0; j < 8; j++) {
-                if (row - 2 == i && (col - 1 == j || col + 1 == j)) {
-                    board[i][j] = '0';
-                }
-                if (row + 2 == i && (col - 1 == j || col + 1 == j)) {
-                    board[i][j] = '0';
-                }
-                if (col - 2 == j && (row - 1 == i || row + 1 == i)) {
-                    board[i][j] = '0';
-                }
-                if (col + 2 == j && (row - 1 == i || row + 1 == i)) {
-                    board[i][j] = '0';
-                }
-            }
-        }
-    }
-
-    // VALIDNI DVIZENJA NA KRALOT
-    // 8/8/8/8/8/8/5k2/8
-    // 8/1K6/8/8/8/8/8/8
-    // 8/8/8/8/8/8/K7/8
-    // 8/8/8/3k4/8/8/8/8
-    // 8/8/8/8/8/8/8/7k
-    public static void findValidKingMoves(char[][] board, int row, int col) {
-        for (int i = 0; i < 8; i++) {
-            for (int j = 0; j < 8; j++) {
-                if (row - 1 == i && (col - 1 == j || col + 1 == j || col == j)) {
-                    board[i][j] = '0';
-                }
-                if (row == i && (col - 1 == j || col + 1 == j)) {
-                    board[i][j] = '0';
-                }
-                if (row + 1 == i && (col - 1 == j || col + 1 == j || col == j)) {
-                    board[i][j] = '0';
-                }
-            }
-        }
-    }
-
-    // VALIDNI DVIZENJA NA PIONOT
-    // 8/8/8/8/8/8/5p2/8
-    // 8/1P6/8/8/8/8/8/8
-    // 8/8/8/8/8/8/P7/8
-    // 8/8/8/3p4/8/8/8/8
-    // 8/8/8/8/8/8/8/7P
-    public static void findValidPawnMoves(char[][] board, int row, int col) {
-        for (int i = 0; i < 8; i++) {
-            for (int j = 0; j < 8; j++) {
-                if (row - 1 == i && (col - 1 == j || col + 1 == j || col == j)) {
-                    board[i][j] = '0';
-                }
-                if (row - 2 == i && (col == j)) {
-                    board[i][j] = '0';
-                }
-            }
-        }
-    }
-
-    // VALIDNI DVIZENJA NA KRALICATA
-    // 8/8/8/8/8/8/5Q2/8
-    // 8/3q4/8/8/8/8/8/8
-    // 1q6/8/8/8/8/8/8/8
-    // 8/8/8/8/8/4Q3/8/8
-    // 8/8/8/8/8/8/8/2Q5
     public static void findValidQueenMoves(char[][] board, int row, int col) {
-        findValidBishopMoves(board, row, col);
         findValidRookMoves(board, row, col);
+        findValidBishopMoves(board, row, col);
     }
 }
